@@ -1,0 +1,6 @@
+id;owner.id;data;mandatory;type;mode;secured
+service:scm:svn:url;service:scm:svn;;true;TEXT;;
+service:scm:svn:user;service:scm:svn;;true;TEXT;;true
+service:scm:svn:password;service:scm:svn;;true;TEXT;;true
+service:scm:svn:repository;service:scm:svn;;true;TEXT;;
+service:scm:svn:index;service:scm:svn;;false;BINARY;;
