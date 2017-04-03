@@ -131,7 +131,7 @@ public class SvnPluginResourceTest extends AbstractServerTest {
 
 	private void prepareMockRepository() throws IOException {
 		httpServer.stubFor(get(urlPathEqualTo("/gfi-gstack/")).willReturn(aResponse().withStatus(HttpStatus.SC_OK)
-				.withBody(IOUtils.toString(new ClassPathResource("mock-server/svn/svn-repo.html").getInputStream(), StandardCharsets.UTF_8))));
+				.withBody(IOUtils.toString(new ClassPathResource("mock-server/scm/svn/svn-repo.html").getInputStream(), StandardCharsets.UTF_8))));
 		httpServer.start();
 	}
 
