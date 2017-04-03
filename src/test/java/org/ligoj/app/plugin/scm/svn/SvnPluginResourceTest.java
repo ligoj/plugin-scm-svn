@@ -66,7 +66,7 @@ public class SvnPluginResourceTest extends AbstractServerTest {
 	}
 
 	/**
-	 * Return the subscription identifier of MDA. Assumes there is only one subscription for a service.
+	 * Return the subscription identifier of the given project. Assumes there is only one subscription for a service.
 	 */
 	protected Integer getSubscription(final String project) {
 		return getSubscription(project, SvnPluginResource.KEY);
