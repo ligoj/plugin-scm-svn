@@ -147,7 +147,7 @@ public class SvnPluginResourceTest extends AbstractServerTest {
 	}
 
 	@Test
-	public void checkStatusAuthenticationFailed() throws Exception {
+	public void checkStatusAuthenticationFailed() {
 		httpServer.start();
 		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> {
 			resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription));
@@ -155,7 +155,7 @@ public class SvnPluginResourceTest extends AbstractServerTest {
 	}
 
 	@Test
-	public void checkStatusNotAdmin() throws Exception {
+	public void checkStatusNotAdmin() {
 		httpServer.stubFor(get(urlPathEqualTo("/")).willReturn(aResponse().withStatus(HttpStatus.SC_NOT_FOUND)));
 		httpServer.start();
 		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> {
@@ -164,7 +164,7 @@ public class SvnPluginResourceTest extends AbstractServerTest {
 	}
 
 	@Test
-	public void checkStatusInvalidIndex() throws Exception {
+	public void checkStatusInvalidIndex() {
 		httpServer.stubFor(get(urlPathEqualTo("/")).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody("<html>some</html>")));
 		httpServer.start();
 		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> {
@@ -173,7 +173,7 @@ public class SvnPluginResourceTest extends AbstractServerTest {
 	}
 
 	@Test
-	public void findAllByName() throws Exception {
+	public void findAllByName() throws IOException {
 		prepareMockAdmin();
 		httpServer.start();
 
@@ -184,7 +184,7 @@ public class SvnPluginResourceTest extends AbstractServerTest {
 	}
 
 	@Test
-	public void findAllByNameNoListing() throws Exception {
+	public void findAllByNameNoListing() {
 		httpServer.start();
 
 		final List<NamedBean<String>> projects = resource.findAllByName("service:scm:svn:dig", "as-");
