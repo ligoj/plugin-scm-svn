@@ -3,26 +3,27 @@ addons:
     packages:
       - graphviz
 before_cache: 
-  - "rm -rf $HOME/.m2/repository/org/ligoj/app"
   - "find $HOME/.m2 -name resolver-status.properties -exec rm {} \\;"
-before_install: 
+before_install:
   - "chmod +x ./travis.sh"
+  - rm "${JAVA_HOME}/lib/security/cacerts"
+  - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
+install: java --version 
 cache: 
   directories: 
     - $HOME/.m2/repository
     - $HOME/.sonar/cache
-    - $HOME/jvm
+    - $HOME/.cache
     - $HOME/maven
+jdk: openjdk10
 env: 
   - TARGET=BUILD
 branches:
   only:
     - master
     - dev
-install: /bin/true 
-jdk: oraclejdk9
 language: java
 notifications: 
   email: false
-script: "./travis.sh"
 sudo: false
+script: "./travis.sh"
