@@ -2,9 +2,9 @@ package org.ligoj.app.plugin.scm.svn;
 
 import java.util.Map;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ligoj.app.plugin.scm.AbstractIndexBasedPluginResource;
@@ -48,8 +48,8 @@ public class SvnPluginResource extends AbstractIndexBasedPluginResource implemen
 	 */
 	@Override
 	protected Object toData(final String statusContent) {
-		final int rindex = statusContent.indexOf("Revision ");
-		final int lindex = statusContent.indexOf(':', rindex + 1);
-		return Integer.parseInt(StringUtils.trim(statusContent.substring(rindex + "Revision ".length(), lindex)));
+		final int rIndex = statusContent.indexOf("Revision ");
+		final int lIndex = statusContent.indexOf(':', rIndex + 1);
+		return Integer.parseInt(StringUtils.trim(statusContent.substring(rIndex + "Revision ".length(), lIndex)));
 	}
 }
