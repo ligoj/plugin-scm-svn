@@ -11,7 +11,7 @@ import java.util.List;
 import jakarta.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ class SvnPluginResourceTest extends AbstractServerTest {
 	void prepareData() throws IOException {
 		// Only with Spring context
 		persistEntities("csv", new Class[] { Node.class, Parameter.class, Project.class, Subscription.class, ParameterValue.class },
-				StandardCharsets.UTF_8.name());
+				StandardCharsets.UTF_8);
 		this.subscription = getSubscription("Jupiter");
 
 		// Coverage only
@@ -114,9 +114,7 @@ class SvnPluginResourceTest extends AbstractServerTest {
 
 		// Invoke create for an already created entity, since for now, there is
 		// nothing but validation pour SonarQube
-		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> {
-			resource.link(this.subscription);
-		}), "service:scm:svn:repository", "svn-repository");
+		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.link(this.subscription)), "service:scm:svn:repository", "svn-repository");
 	}
 
 	@Test
@@ -149,27 +147,21 @@ class SvnPluginResourceTest extends AbstractServerTest {
 	@Test
 	void checkStatusAuthenticationFailed() {
 		httpServer.start();
-		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> {
-			resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription));
-		}), SvnPluginResource.KEY + ":url", "svn-admin");
+		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription))), SvnPluginResource.KEY + ":url", "svn-admin");
 	}
 
 	@Test
 	void checkStatusNotAdmin() {
 		httpServer.stubFor(get(urlPathEqualTo("/")).willReturn(aResponse().withStatus(HttpStatus.SC_NOT_FOUND)));
 		httpServer.start();
-		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> {
-			resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription));
-		}), SvnPluginResource.KEY + ":url", "svn-admin");
+		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription))), SvnPluginResource.KEY + ":url", "svn-admin");
 	}
 
 	@Test
 	void checkStatusInvalidIndex() {
 		httpServer.stubFor(get(urlPathEqualTo("/")).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody("<html>some</html>")));
 		httpServer.start();
-		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> {
-			resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription));
-		}), SvnPluginResource.KEY + ":url", "svn-admin");
+		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription))), SvnPluginResource.KEY + ":url", "svn-admin");
 	}
 
 	@Test
@@ -179,8 +171,8 @@ class SvnPluginResourceTest extends AbstractServerTest {
 
 		final List<NamedBean<String>> projects = resource.findAllByName("service:scm:svn:dig", "as-");
 		Assertions.assertEquals(4, projects.size());
-		Assertions.assertEquals("has-evamed", projects.get(0).getId());
-		Assertions.assertEquals("has-evamed", projects.get(0).getName());
+		Assertions.assertEquals("has-event", projects.get(0).getId());
+		Assertions.assertEquals("has-event", projects.get(0).getName());
 	}
 
 	@Test
