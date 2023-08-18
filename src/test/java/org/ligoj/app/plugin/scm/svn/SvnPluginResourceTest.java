@@ -58,10 +58,10 @@ class SvnPluginResourceTest extends AbstractServerTest {
 		// Only with Spring context
 		persistEntities("csv", new Class[] { Node.class, Parameter.class, Project.class, Subscription.class, ParameterValue.class },
 				StandardCharsets.UTF_8.name());
-		this.subscription = getSubscription("gStack");
+		this.subscription = getSubscription("Jupiter");
 
 		// Coverage only
-		resource.getKey();
+		Assertions.assertEquals("service:scm:svn",resource.getKey());
 	}
 
 	/**
@@ -129,7 +129,7 @@ class SvnPluginResourceTest extends AbstractServerTest {
 	}
 
 	private void prepareMockRepository() throws IOException {
-		httpServer.stubFor(get(urlPathEqualTo("/ligoj-gstack/")).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody(
+		httpServer.stubFor(get(urlPathEqualTo("/ligoj-jupiter/")).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody(
 				IOUtils.toString(new ClassPathResource("mock-server/scm/svn/svn-repo.html").getInputStream(), StandardCharsets.UTF_8))));
 		httpServer.start();
 	}

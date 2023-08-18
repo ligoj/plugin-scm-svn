@@ -3,4 +3,4 @@ service:scm:svn:url;http://localhost:8120;service:scm:svn:dig;
 service:scm:svn:user;junit;service:scm:svn:dig;
 service:scm:svn:password;secret;service:scm:svn:dig;
 service:scm:svn:index;true;service:scm:svn:dig;
-service:scm:svn:repository;ligoj-gstack;;1
+service:scm:svn:repository;ligoj-jupiter;;1
