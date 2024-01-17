@@ -56,7 +56,7 @@ class SvnPluginResourceTest extends AbstractServerTest {
 	@BeforeEach
 	void prepareData() throws IOException {
 		// Only with Spring context
-		persistEntities("csv", new Class[] { Node.class, Parameter.class, Project.class, Subscription.class, ParameterValue.class },
+		persistEntities("csv", new Class<?>[] { Node.class, Parameter.class, Project.class, Subscription.class, ParameterValue.class },
 				StandardCharsets.UTF_8);
 		this.subscription = getSubscription("Jupiter");
 
@@ -171,8 +171,8 @@ class SvnPluginResourceTest extends AbstractServerTest {
 
 		final List<NamedBean<String>> projects = resource.findAllByName("service:scm:svn:dig", "as-");
 		Assertions.assertEquals(4, projects.size());
-		Assertions.assertEquals("has-event", projects.get(0).getId());
-		Assertions.assertEquals("has-event", projects.get(0).getName());
+		Assertions.assertEquals("has-event", projects.getFirst().getId());
+		Assertions.assertEquals("has-event", projects.getFirst().getName());
 	}
 
 	@Test
