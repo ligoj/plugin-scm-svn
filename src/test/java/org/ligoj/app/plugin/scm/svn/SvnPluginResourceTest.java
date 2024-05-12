@@ -1,15 +1,6 @@
 package org.ligoj.app.plugin.scm.svn;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 import jakarta.transaction.Transactional;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
@@ -17,22 +8,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.ligoj.app.AbstractServerTest;
-import org.ligoj.app.api.SubscriptionStatusWithData;
 import org.ligoj.app.dao.ParameterValueRepository;
-import org.ligoj.app.model.Node;
-import org.ligoj.app.model.Parameter;
-import org.ligoj.app.model.ParameterValue;
-import org.ligoj.app.model.Project;
-import org.ligoj.app.model.Subscription;
+import org.ligoj.app.model.*;
 import org.ligoj.app.resource.subscription.SubscriptionResource;
 import org.ligoj.bootstrap.MatcherUtil;
-import org.ligoj.bootstrap.core.NamedBean;
 import org.ligoj.bootstrap.core.validation.ValidationJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 /**
  * Test class of {@link SvnPluginResource}
@@ -120,8 +110,7 @@ class SvnPluginResourceTest extends AbstractServerTest {
 	@Test
 	void checkSubscriptionStatus() throws Exception {
 		prepareMockRepository();
-		final SubscriptionStatusWithData nodeStatusWithData = resource
-				.checkSubscriptionStatus(subscriptionResource.getParametersNoCheck(subscription));
+		final var nodeStatusWithData = resource.checkSubscriptionStatus(subscriptionResource.getParametersNoCheck(subscription));
 		Assertions.assertTrue(nodeStatusWithData.getStatus().isUp());
 		Assertions.assertEquals(2039, nodeStatusWithData.getData().get("info"));
 	}
@@ -141,27 +130,31 @@ class SvnPluginResourceTest extends AbstractServerTest {
 	@Test
 	void checkStatus() throws Exception {
 		prepareMockAdmin();
-		Assertions.assertTrue(resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription)));
+		final var parameters = subscriptionResource.getParametersNoCheck(this.subscription);
+		Assertions.assertTrue(resource.checkStatus(parameters));
 	}
 
 	@Test
 	void checkStatusAuthenticationFailed() {
-		httpServer.start();
-		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription))), SvnPluginResource.KEY + ":url", "svn-admin");
+		startAndCheckFail();
 	}
 
 	@Test
 	void checkStatusNotAdmin() {
 		httpServer.stubFor(get(urlPathEqualTo("/")).willReturn(aResponse().withStatus(HttpStatus.SC_NOT_FOUND)));
-		httpServer.start();
-		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription))), SvnPluginResource.KEY + ":url", "svn-admin");
+		startAndCheckFail();
 	}
 
 	@Test
 	void checkStatusInvalidIndex() {
 		httpServer.stubFor(get(urlPathEqualTo("/")).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody("<html>some</html>")));
+		startAndCheckFail();
+	}
+
+	private void startAndCheckFail() {
 		httpServer.start();
-		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.checkStatus(subscriptionResource.getParametersNoCheck(subscription))), SvnPluginResource.KEY + ":url", "svn-admin");
+		final var parameters = subscriptionResource.getParametersNoCheck(this.subscription);
+		MatcherUtil.assertThrows(Assertions.assertThrows(ValidationJsonException.class, () -> resource.checkStatus(parameters)), SvnPluginResource.KEY + ":url", "svn-admin");
 	}
 
 	@Test
@@ -169,7 +162,7 @@ class SvnPluginResourceTest extends AbstractServerTest {
 		prepareMockAdmin();
 		httpServer.start();
 
-		final List<NamedBean<String>> projects = resource.findAllByName("service:scm:svn:dig", "as-");
+		final var projects = resource.findAllByName("service:scm:svn:dig", "as-");
 		Assertions.assertEquals(4, projects.size());
 		Assertions.assertEquals("has-event", projects.getFirst().getId());
 		Assertions.assertEquals("has-event", projects.getFirst().getName());
@@ -179,7 +172,7 @@ class SvnPluginResourceTest extends AbstractServerTest {
 	void findAllByNameNoListing() {
 		httpServer.start();
 
-		final List<NamedBean<String>> projects = resource.findAllByName("service:scm:svn:dig", "as-");
+		final var projects = resource.findAllByName("service:scm:svn:dig", "as-");
 		Assertions.assertEquals(0, projects.size());
 	}
 
