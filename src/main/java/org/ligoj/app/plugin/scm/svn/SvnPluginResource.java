@@ -1,16 +1,16 @@
 package org.ligoj.app.plugin.scm.svn;
 
-import java.util.Map;
-
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.ligoj.app.plugin.scm.AbstractIndexBasedPluginResource;
 import org.ligoj.app.plugin.scm.ScmResource;
 import org.ligoj.app.plugin.scm.ScmServicePlugin;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * Subversion resource.
@@ -40,7 +40,7 @@ public class SvnPluginResource extends AbstractIndexBasedPluginResource implemen
 	@Override
 	protected String getRepositoryUrl(final Map<String, String> parameters) {
 		// For SVN, a trailing "/" is added.
-		return StringUtils.appendIfMissing(super.getRepositoryUrl(parameters), "/");
+		return Strings.CS.appendIfMissing(super.getRepositoryUrl(parameters), "/");
 	}
 
 	/**
