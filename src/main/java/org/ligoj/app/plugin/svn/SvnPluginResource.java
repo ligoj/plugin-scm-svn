@@ -1,4 +1,4 @@
-package org.ligoj.app.plugin.scm.svn;
+package org.ligoj.app.plugin.svn;
 
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;

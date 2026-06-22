@@ -1,4 +1,4 @@
-package org.ligoj.app.plugin.scm.svn;
+package org.ligoj.app.plugin.svn;
 
 import jakarta.transaction.Transactional;
 import org.apache.commons.io.IOUtils;
